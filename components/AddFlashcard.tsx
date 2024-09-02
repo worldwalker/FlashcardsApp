@@ -13,8 +13,6 @@ import {
 import {useGlobalContext} from '../context/GlobalContext';
 import {Flashcard} from '../types/common';
 
-const FLASHCARDS_KEY = 'flashcards';
-
 const AddFlashcard: React.FC = ({route, navigation}: any) => {
   const [flashcard, setFlashcard] = useState<Flashcard>({
     question: '',
@@ -22,8 +20,6 @@ const AddFlashcard: React.FC = ({route, navigation}: any) => {
     id: '',
   });
   const {addFlashcard} = useGlobalContext();
-
-  /** LIFECYCLE */
 
   /** HANDLERS */
   const handleInputChange = (name: keyof Flashcard, value: string) => {
@@ -44,13 +40,13 @@ const AddFlashcard: React.FC = ({route, navigation}: any) => {
 
       // Get the existing flashcards from storage
       const flashcards = JSON.parse(
-        (await AsyncStorage.getItem(FLASHCARDS_KEY)) || '[]',
+        (await AsyncStorage.getItem('flashcards')) || '[]',
       );
 
       const id = Date.now().toString();
       // Add the flashcard to storage
       await AsyncStorage.setItem(
-        FLASHCARDS_KEY,
+        'flashcards',
         JSON.stringify([...flashcards, {...flashcard, id: id}]),
       );
 

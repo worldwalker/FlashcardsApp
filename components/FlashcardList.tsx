@@ -1,9 +1,8 @@
 // src/components/FlashcardList.tsx
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {
   ScrollView,
   StyleSheet,
-  Button,
   TouchableOpacity,
   Text,
   SafeAreaView,
@@ -12,18 +11,15 @@ import Flashcard from './Flashcard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useGlobalContext} from '../context/GlobalContext';
 
-const FLASHCARDS_KEY = 'flashcards';
-
 const FlashcardList = ({navigation}: any) => {
-  const {flashcards, addFlashcard, setFlashcards, removeFlashcard} =
-    useGlobalContext();
+  const {flashcards, setFlashcards} = useGlobalContext();
 
   /** LIFECYCLE */
   useEffect(() => {
     const loadFlashcards = async () => {
       try {
         const storedFlashcards =
-          (await AsyncStorage.getItem(FLASHCARDS_KEY)) || '[]';
+          (await AsyncStorage.getItem('flashcards')) || '[]';
 
         setFlashcards(JSON.parse(storedFlashcards));
       } catch (error) {

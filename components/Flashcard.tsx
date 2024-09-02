@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {Flashcard as FlashcardType} from '../types/common';
 
 const colors = [
@@ -25,13 +25,14 @@ const Flashcard: React.FC<FlashcardProps> = ({navigation, card}) => {
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
   };
-
   const [cardColor, setCardColor] = useState(getRandomColor());
 
+  /** LIFECYCLE */
   useEffect(() => {
     setCardColor(getRandomColor());
   }, []);
 
+  /** HANDLERS */
   const handleCardPress = (card: FlashcardType, cardColor: string) => {
     navigation.navigate('ChosenFlashCard', {card, cardColor});
   };
