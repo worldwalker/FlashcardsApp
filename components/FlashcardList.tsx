@@ -6,76 +6,79 @@ import {
   Button,
   TouchableOpacity,
   Text,
+  SafeAreaView,
 } from 'react-native';
 import Flashcard from './Flashcard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Flashcard as FlashcardType} from '../types/common';
+import {useGlobalContext} from '../context/GlobalContext';
 
 const FLASHCARDS_KEY = 'flashcards';
 
 const FlashcardList = ({navigation}: any) => {
-  const [flashcards, setFlashcards] = useState<FlashcardType[]>([]);
+  const {flashcards, addFlashcard, setFlashcards, removeFlashcard} =
+    useGlobalContext();
 
+  /** LIFECYCLE */
   useEffect(() => {
     const loadFlashcards = async () => {
       try {
-        const storedFlashcards = await AsyncStorage.getItem(FLASHCARDS_KEY);
-        if (storedFlashcards) {
-          setFlashcards(JSON.parse(storedFlashcards));
-        }
+        const storedFlashcards =
+          (await AsyncStorage.getItem(FLASHCARDS_KEY)) || '[]';
+
+        setFlashcards(JSON.parse(storedFlashcards));
       } catch (error) {
         console.error('Failed to load flashcards from storage:', error);
       }
     };
 
     loadFlashcards();
-  }, []);
+  }, [navigation]);
 
-  // const addFlashcard = async (card: FlashcardType) => {
-  //   const updatedFlashcards = [...flashcards, card];
-  //   setFlashcards(updatedFlashcards);
-  //   try {
-  //     await AsyncStorage.setItem(
-  //       FLASHCARDS_KEY,
-  //       JSON.stringify(updatedFlashcards),
-  //     );
-  //   } catch (error) {
-  //     console.error('Failed to save flashcards to storage:', error);
-  //   }
-  // };
-
-  const addFlashcard = () => {
+  /** HANDLERS */
+  const handleAddFlashcard = () => {
     navigation.navigate('AddFlashcard');
   };
 
-  const removeFlashcard = async (id: string) => {
-    const updatedFlashcards = flashcards.filter(card => card.id !== id);
-    setFlashcards(updatedFlashcards);
-    try {
-      await AsyncStorage.setItem(
-        FLASHCARDS_KEY,
-        JSON.stringify(updatedFlashcards),
-      );
-    } catch (error) {
-      console.error('Failed to save flashcards to storage:', error);
-    }
-  };
+  if (!flashcards.length) {
+    return (
+      <SafeAreaView style={styles.noFlashcardsContainer}>
+        <Text style={[styles.text, {color: 'gray', marginTop: 50}]}>
+          No flashcards found
+        </Text>
+        <TouchableOpacity style={styles.addButton} onPress={handleAddFlashcard}>
+          <Text style={styles.text}>Add Flashcard</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
 
   return (
-    <>
+    <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.list}>
-        {flashcards.map(card => (
-          <Flashcard key={card.id} card={card} />
-        ))}
+        {flashcards.map(card => {
+          return (
+            <Flashcard key={card?.id} card={card} navigation={navigation} />
+          );
+        })}
       </ScrollView>
-      <TouchableOpacity style={styles.addButton} onPress={addFlashcard}>
-        <Text>Add Flashcard</Text>
+      <TouchableOpacity style={styles.addButton} onPress={handleAddFlashcard}>
+        <Text style={styles.text}>Add Flashcard</Text>
       </TouchableOpacity>
-    </>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
+  },
+  noFlashcardsContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   list: {
     flexWrap: 'wrap',
     padding: 10,
@@ -83,9 +86,14 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   addButton: {
-    backgroundColor: 'lightgreen',
+    width: '100%',
+    backgroundColor: 'green',
     padding: 10,
     alignItems: 'center',
+  },
+  text: {
+    color: 'white',
+    fontSize: 20,
   },
 });
 

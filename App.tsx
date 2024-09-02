@@ -6,18 +6,34 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootStackParamList} from './types/common';
 import AddFlashcard from './components/AddFlashcard';
+import ChosenFlashCard from './components/ChosenFlashCard';
+import {GlobalProvider} from './context/GlobalContext';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const App: React.FC = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Flashcards">
-        <Stack.Screen name="Flashcards" component={FlashcardList} />
-        <Stack.Screen name="AddFlashcard" component={AddFlashcard} />
-        <Stack.Screen name="Flashcard" component={FlashcardList} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <GlobalProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Flashcards">
+          <Stack.Screen
+            name="Flashcards"
+            component={FlashcardList}
+            options={{title: 'Flashcards'}}
+          />
+          <Stack.Screen
+            name="AddFlashcard"
+            component={AddFlashcard}
+            options={{title: 'Add Flashcard'}}
+          />
+          <Stack.Screen
+            name="ChosenFlashCard"
+            component={ChosenFlashCard}
+            options={{title: 'Chosen Flashcard'}}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GlobalProvider>
   );
 };
 

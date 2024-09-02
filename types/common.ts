@@ -7,5 +7,5 @@ export interface Flashcard {
 export type RootStackParamList = {
   Flashcards: undefined;
   AddFlashcard: undefined;
-  Flashcard: undefined;
+  ChosenFlashCard: {card: Flashcard; cardColor: string};
 };
