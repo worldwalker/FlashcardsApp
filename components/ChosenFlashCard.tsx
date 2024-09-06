@@ -76,36 +76,30 @@ const ChosenFlashCard = ({route, navigation}: ChosenFlashCardProps) => {
     }).start();
   };
 
-  const renderContent = () => {
-    if (isFlipped) {
-      return (
-        <Animated.View
-          style={[
-            styles.card,
-            backAnimatedStyle,
-            {backgroundColor: cardColor},
-          ]}>
-          <Text style={styles.cardText}>{card.answer}</Text>
-        </Animated.View>
-      );
-    } else {
-      return (
-        <Animated.View
-          style={[
-            styles.card,
-            frontAnimatedStyle,
-            {backgroundColor: cardColor},
-          ]}>
-          <Text style={styles.cardText}>{card.question}</Text>
-        </Animated.View>
-      );
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity onPress={flipCard} style={styles.container}>
-        {renderContent()}
+        {isFlipped ? (
+          <Animated.View
+            style={[
+              styles.card,
+              backAnimatedStyle,
+              {backgroundColor: cardColor},
+            ]}>
+            <Text style={styles.cardTitle}>Answer:</Text>
+            <Text style={styles.cardText}>{card.answer}</Text>
+          </Animated.View>
+        ) : (
+          <Animated.View
+            style={[
+              styles.card,
+              frontAnimatedStyle,
+              {backgroundColor: cardColor},
+            ]}>
+            <Text style={styles.cardTitle}>Question:</Text>
+            <Text style={styles.cardText}>{card.question}</Text>
+          </Animated.View>
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={handleDelete}>
@@ -137,6 +131,11 @@ const styles = StyleSheet.create({
   backCard: {
     backgroundColor: 'blue',
     transform: [{rotateY: '180deg'}],
+  },
+  cardTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
   },
   cardText: {
     fontSize: 22,
